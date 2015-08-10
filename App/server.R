@@ -133,6 +133,7 @@ shinyServer(function(input, output) {
         DeathsPerState <- summaryBy(Age~Race,data=Data,FUN=c(length))
         DeathsPerRace <- merge(DeathsPerState,RacePopulation,by='Race')
         DeathsPerRace$Rate <- (DeathsPerRace$Age.length/DeathsPerRace$Pop)*1000000
+        names(DeathsPerRace) <- c('Race','kills','Population','Rate(*10^6)')
         DeathsPerRace
     } #, options = list(bFilter = FALSE, iDisplayLength = 50)
     )
@@ -142,6 +143,7 @@ shinyServer(function(input, output) {
         DeathsPerSex <- summaryBy(Age~Sex,data=Data,FUN=c(length))
         DeathsPerSex <- merge(DeathsPerSex,SexPopulation,by='Sex')
         DeathsPerSex$Rate <- (DeathsPerSex$Age.length/DeathsPerSex$Pop)*1000000
+        names(DeathsPerSex) <- c('Sex','Kills','Population', 'Rate(*10^6)')
         DeathsPerSex
     } #, options = list(bFilter = FALSE, iDisplayLength = 50)
     )

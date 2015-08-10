@@ -1,7 +1,7 @@
 Developing Data Products
 ========================================================
 author: Dimitrios Bizopoulos, Mechanical Engineer
-date: Mon Aug 10 16:57:47 2015
+date: Mon Aug 10 17:05:19 2015
 
 KilledbyPolice.net Database
 ========================================================
@@ -17,16 +17,15 @@ Development
 ========================================================
 type: sub-section
 
-Using row data taken from [KilledbyPolice](http://www.killedbypolice.net/) and using some text scraping technicies to clean the data an application was implimented to visualize the database. The application can be found in www.dbizopoulos.com. The code of the data can be found in [Github:mpizosdim](https://github.com/mpizosdim/DevelopingDataProducts).
+Using row data taken from [KilledbyPolice](http://www.killedbypolice.net/) and using some text scraping technicies to clean the data an application was implimented to visualize the database. The application can be found in [shinyApp:KilledByPolice](https://mpizosdim.shinyapps.io/Killed_by_Police). The code of the data can be found in [Github:mpizosdim](https://github.com/mpizosdim/DevelopingDataProducts).
 
 Application
 ========================================================
 type: sub-section
 
-The applciation  allows the user to:
+The application allows the user to:
 
-- Select inputs such as year,race or sex to visualize 
-in the MAP of US the people killed by the police in every state
+- Select inputs such as year, race or sex to visualize in the map of US the people killed by the police in every state
 - Interesting tables for the data
 - Check interesting plots of the data.
 - About page explaining the application.
