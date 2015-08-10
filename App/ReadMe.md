@@ -9,7 +9,7 @@ output: html_document
 
 ### Application
 
-This application visualize the kills that are reported to be done by US police from May 2013 till August of 2015. The data have been taken by the [killedbyPolice](http://www.killedbypolice.net/) website. 
+This application visualize the kills that are reported to be done by US police from May 2013 till August of 2015. The data have been taken by the [killedbyPolice](http://www.killedbypolice.net/) website.  I the github repository there is also a small R presentation in the github explaining the application.
 
 To get and clean the data from this site various technics were used including `readLines` from the base library to get the html code and `gsub` and ` regmatches` functions to extract info and store it to a data frame. The final Data have the following format:
 
@@ -24,7 +24,7 @@ To get and clean the data from this site various technics were used including `r
 6 6 2013-05-02  22  <NA> Male  indiana
 ```
 
-Furthermore, the US states populations as well as the distribution of the races in Us is taken by the wikipedia site: [Demographics of the United States](https://en.wikipedia.org/wiki/Demographics_of_the_United_States]) You can find the code to exctarct the data in my github account [Github:mpizosdim](https://github.com/mpizosdim) under the KilledbyPolice project. For more info feel free to contact me in my mail account: dimitrisbizopoulos@gmail.com .
+Furthermore, the US states populations as well as the distribution of the races in Us is taken by the wikipedia site: [Demographics of the United States](https://en.wikipedia.org/wiki/Demographics_of_the_United_States]) You can find the code to exctarct the data, as well as the application, in my github account [Github:mpizosdim](https://github.com/mpizosdim/DevelopingDataProducts). For more info feel free to contact me in my mail account: dimitrisbizopoulos@gmail.com .
 
 
 ## US Map
