@@ -32,7 +32,7 @@ shinyUI(
                         h4('Pie Chart: People Killed by Race',align = 'center'),showOutput("PieChart", "nvd3"),
                         h4('Pie Chart: Killed by Sex',align = 'center'),showOutput("PieChart2", "nvd3")),
                tabPanel('Tables',tableOutput("dTable"),tableOutput("dTable2")),
-               tabPanel('About',mainPanel(includeMarkdown('ReadMe.md')))
+               tabPanel('About',mainPanel(includeMarkdown('ReadMe.Rmd')))
                )
     
     
