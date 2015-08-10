@@ -82,128 +82,129 @@ levels(Data$Sex) <- c('Male','Female')
 Data <- Data[order(Data$Date),]
 write.csv(Data,file='Data2.csv')
 
-DeathsPerState <- summaryBy(Age~region,data=Data,FUN=c(length))
-MeanAgePerState <- summaryBy(Age~region,data=Data,FUN=c(mean),na.rm=TRUE)
-MeanAgePerState <- summaryBy(Age~region,data=Data,FUN=c(mean),na.rm=TRUE)
-
-MeanAgePerState$region <- as.character(MeanAgePerState$region)
-all_states <- map_data('state')
-all_states <- all_states[all_states$region!="district of columbia",]
-Total <- merge(all_states,DeathsPerState,by='region')
-
-## plot US
-p <- ggplot()
-p <- p + geom_polygon(data=Total, aes(x=long, y=lat, group = group, fill=Total$Age.length),colour="white"
-) + scale_fill_continuous(low = "thistle2", high = "darkred", guide="colorbar")
-P1 <- p + theme_bw()  + labs(fill = "Black to White Incarceration Rates \n Weighted by Relative Population" 
-                             ,title = "State Incarceration Rates by Race, 2010", x="", y="")
-P1 + scale_y_continuous(breaks=c()) + scale_x_continuous(breaks=c()) + theme(panel.border =  element_blank())
-
-## Histogram Age
-
-ggplot(Data,aes(x=Age))+
-    geom_histogram(aes(binwidth=.5),
-                   colour='black',
-                   fill='white')+
-    geom_vline(aes(xintercept=mean(Age, na.rm=TRUE)),
-               color='red',linetype='dashed',size=1)
-
-## Histogram Age Sex
-cdat <- summaryBy(Age~Sex,data=Data,FUN=c(mean),na.rm=TRUE)
-cdat <- cdat[-3,]
-ggplot(Data,aes(x=Age,fill=Sex))+
-    geom_histogram(binwidth=.7, alpha=.8, position="identity")+
-    geom_vline(data=cdat, aes(xintercept=Age.mean,  colour=Sex),
-               linetype="dashed", size=1)
-
-
-## pipe male~female
-
-Male_FemaleN <- summaryBy(Age~Sex,data=Data,FUN=c(length))
-
-pie <- ggplot(Male_FemaleN, aes(x = Age.length, fill = factor(Sex))) +
-    geom_bar(width = 1)
-pie + coord_polar()
-
-
-bp<- ggplot(Male_FemaleN, aes(x="", y=Age.length, fill=Sex))+
-    geom_bar(width = 1, stat = "identity")
-pie1 <- bp + coord_polar("y", start=0)
-
-## Race
-
-RaceN <- summaryBy(Age~Race,data=Data,FUN=c(length))
-
-bp<- ggplot(RaceN, aes(x="", y=Age.length, fill=Race))+
-    geom_bar(width = 1, stat = "identity")
-pie2 <- bp + coord_polar("y", start=0)
-
-multiplot(pie1,pie2,cols=2)
-
-
-## Time serie per year
-
-Date <- summaryBy(Age~Date,data=Data,FUN=c(length))
-Date$Date<-as.Date(Date$Date,'%Y-%m-%d')
-Year2015N <- Date[year(Date$Date)==2015,]
-Year2015N$Week <- week(Year2015N$Date)
-Year2014N <- Date[year(Date$Date)==2014,]
-Year2014N$Week <- week(Year2014N$Date)
-Year2013N <- Date[year(Date$Date)==2013,]
-Year2013N$Week <- week(Year2013N$Date)
-
-Weekly2014 <- summaryBy(Age.length~Week,data=Year2014N,FUN=sum,na.rm=TRUE)
-Weekly2014 <- Weekly2014[-c(49),]
-
-
-Weekly2015 <- summaryBy(Age.length~Week,data=Year2015N,FUN=sum,na.rm=TRUE)
-Weekly2015 <- Weekly2015[-c(24),]
-Weekly2013 <- summaryBy(Age.length~Week,data=Year2013N,FUN=sum,na.rm=TRUE)
-Weekly2013 <- Weekly2013[-c(37),]
-
-WeekTemp1 <- merge(Weekly2013,Weekly2014,by='Week',all=TRUE)
-WeekTemp1 <- WeekTemp1[-c(54),]
-WeekTemp2 <- merge(WeekTemp1,Weekly2015,by='Week',all=TRUE)
-WeekData <- WeekTemp2[-c(54),]
-colnames(WeekData) <- c("Week", "2013",'2014','2015')
-
-
-
-ggplot(data=WeekData,aes(x=Week,y=Kills,color=.))+
-    geom_line(aes(x=Week,y = WeekData$'2013', col = "2013"),size=1)+
-    geom_line(aes(x=Week,y = WeekData$'2014', col = "2014"),size=1)+
-    geom_line(aes(x=Week,y = WeekData$'2015', col = "2015"),size=1)
-
-
-#time series for colored ppl
-
-Bppl <- summaryBy(Age~Date+Race,data=Data,FUN=c(length))
-Bppl <- Bppl[!is.na(Bppl$Race),]
-Bppl <- Bppl[!is.na(Bppl$Date),]
-Bppl <- Bppl[Bppl$Race=='B',]
-
-
-Year2015NB <- Bppl[year(Bppl$Date)==2015,]
-Year2015NB$Week <- week(Year2015NB$Date)
-Year2014NB <- Bppl[year(Bppl$Date)==2014,]
-Year2014NB$Week <- week(Year2014NB$Date)
-Year2013NB <- Bppl[year(Bppl$Date)==2013,]
-Year2013NB$Week <- week(Year2013NB$Date)
-
-
-
-Weekly2014 <- summaryBy(Age.length~Week,data=Year2014NB,FUN=sum,na.rm=TRUE)
-Weekly2015 <- summaryBy(Age.length~Week,data=Year2015NB,FUN=sum,na.rm=TRUE)
-Weekly2015 <- Weekly2015[-c(24),]
-Weekly2013 <- summaryBy(Age.length~Week,data=Year2013NB,FUN=sum,na.rm=TRUE)
-
-WeekTemp1 <- merge(Weekly2013,Weekly2014,by='Week',all=TRUE)
-WeekTemp2 <- merge(WeekTemp1,Weekly2015,by='Week',all=TRUE)
-colnames(WeekData) <- c("Week", "2013",'2014','2015')
-
-ggplot(data=WeekData,aes(x=Week,y=Kills,color=.))+
-    geom_line(aes(x=Week,y = WeekData$'2013', col = "2013"),size=1)+
-    geom_line(aes(x=Week,y = WeekData$'2014', col = "2014"),size=1)+
-    geom_line(aes(x=Week,y = WeekData$'2015', col = "2015"),size=1)
-
-
+## sOME plots used to visualize the results. These are not used in the application. cHnge the FALSE flug to visualize them.
+if(FALSE){
+    DeathsPerState <- summaryBy(Age~region,data=Data,FUN=c(length))
+    MeanAgePerState <- summaryBy(Age~region,data=Data,FUN=c(mean),na.rm=TRUE)
+    MeanAgePerState <- summaryBy(Age~region,data=Data,FUN=c(mean),na.rm=TRUE)
+    
+    MeanAgePerState$region <- as.character(MeanAgePerState$region)
+    all_states <- map_data('state')
+    all_states <- all_states[all_states$region!="district of columbia",]
+    Total <- merge(all_states,DeathsPerState,by='region')
+    
+    ## plot US
+    p <- ggplot()
+    p <- p + geom_polygon(data=Total, aes(x=long, y=lat, group = group, fill=Total$Age.length),colour="white"
+    ) + scale_fill_continuous(low = "thistle2", high = "darkred", guide="colorbar")
+    P1 <- p + theme_bw()  + labs(fill = "Black to White Incarceration Rates \n Weighted by Relative Population" 
+                                 ,title = "State Incarceration Rates by Race, 2010", x="", y="")
+    P1 + scale_y_continuous(breaks=c()) + scale_x_continuous(breaks=c()) + theme(panel.border =  element_blank())
+    
+    ## Histogram Age
+    
+    ggplot(Data,aes(x=Age))+
+        geom_histogram(aes(binwidth=.5),
+                       colour='black',
+                       fill='white')+
+        geom_vline(aes(xintercept=mean(Age, na.rm=TRUE)),
+                   color='red',linetype='dashed',size=1)
+    
+    ## Histogram Age Sex
+    cdat <- summaryBy(Age~Sex,data=Data,FUN=c(mean),na.rm=TRUE)
+    cdat <- cdat[-3,]
+    ggplot(Data,aes(x=Age,fill=Sex))+
+        geom_histogram(binwidth=.7, alpha=.8, position="identity")+
+        geom_vline(data=cdat, aes(xintercept=Age.mean,  colour=Sex),
+                   linetype="dashed", size=1)
+    
+    
+    ## pipe male~female
+    
+    Male_FemaleN <- summaryBy(Age~Sex,data=Data,FUN=c(length))
+    
+    pie <- ggplot(Male_FemaleN, aes(x = Age.length, fill = factor(Sex))) +
+        geom_bar(width = 1)
+    pie + coord_polar()
+    
+    
+    bp<- ggplot(Male_FemaleN, aes(x="", y=Age.length, fill=Sex))+
+        geom_bar(width = 1, stat = "identity")
+    pie1 <- bp + coord_polar("y", start=0)
+    
+    ## Race
+    
+    RaceN <- summaryBy(Age~Race,data=Data,FUN=c(length))
+    
+    bp<- ggplot(RaceN, aes(x="", y=Age.length, fill=Race))+
+        geom_bar(width = 1, stat = "identity")
+    pie2 <- bp + coord_polar("y", start=0)
+    
+    multiplot(pie1,pie2,cols=2)
+    
+    
+    ## Time serie per year
+    
+    Date <- summaryBy(Age~Date,data=Data,FUN=c(length))
+    Date$Date<-as.Date(Date$Date,'%Y-%m-%d')
+    Year2015N <- Date[year(Date$Date)==2015,]
+    Year2015N$Week <- week(Year2015N$Date)
+    Year2014N <- Date[year(Date$Date)==2014,]
+    Year2014N$Week <- week(Year2014N$Date)
+    Year2013N <- Date[year(Date$Date)==2013,]
+    Year2013N$Week <- week(Year2013N$Date)
+    
+    Weekly2014 <- summaryBy(Age.length~Week,data=Year2014N,FUN=sum,na.rm=TRUE)
+    Weekly2014 <- Weekly2014[-c(49),]
+    
+    
+    Weekly2015 <- summaryBy(Age.length~Week,data=Year2015N,FUN=sum,na.rm=TRUE)
+    Weekly2015 <- Weekly2015[-c(24),]
+    Weekly2013 <- summaryBy(Age.length~Week,data=Year2013N,FUN=sum,na.rm=TRUE)
+    Weekly2013 <- Weekly2013[-c(37),]
+    
+    WeekTemp1 <- merge(Weekly2013,Weekly2014,by='Week',all=TRUE)
+    WeekTemp1 <- WeekTemp1[-c(54),]
+    WeekTemp2 <- merge(WeekTemp1,Weekly2015,by='Week',all=TRUE)
+    WeekData <- WeekTemp2[-c(54),]
+    colnames(WeekData) <- c("Week", "2013",'2014','2015')
+    
+    
+    
+    ggplot(data=WeekData,aes(x=Week,y=Kills,color=.))+
+        geom_line(aes(x=Week,y = WeekData$'2013', col = "2013"),size=1)+
+        geom_line(aes(x=Week,y = WeekData$'2014', col = "2014"),size=1)+
+        geom_line(aes(x=Week,y = WeekData$'2015', col = "2015"),size=1)
+    
+    
+    #time series for colored ppl
+    
+    Bppl <- summaryBy(Age~Date+Race,data=Data,FUN=c(length))
+    Bppl <- Bppl[!is.na(Bppl$Race),]
+    Bppl <- Bppl[!is.na(Bppl$Date),]
+    Bppl <- Bppl[Bppl$Race=='B',]
+    
+    
+    Year2015NB <- Bppl[year(Bppl$Date)==2015,]
+    Year2015NB$Week <- week(Year2015NB$Date)
+    Year2014NB <- Bppl[year(Bppl$Date)==2014,]
+    Year2014NB$Week <- week(Year2014NB$Date)
+    Year2013NB <- Bppl[year(Bppl$Date)==2013,]
+    Year2013NB$Week <- week(Year2013NB$Date)
+    
+    
+    
+    Weekly2014 <- summaryBy(Age.length~Week,data=Year2014NB,FUN=sum,na.rm=TRUE)
+    Weekly2015 <- summaryBy(Age.length~Week,data=Year2015NB,FUN=sum,na.rm=TRUE)
+    Weekly2015 <- Weekly2015[-c(24),]
+    Weekly2013 <- summaryBy(Age.length~Week,data=Year2013NB,FUN=sum,na.rm=TRUE)
+    
+    WeekTemp1 <- merge(Weekly2013,Weekly2014,by='Week',all=TRUE)
+    WeekTemp2 <- merge(WeekTemp1,Weekly2015,by='Week',all=TRUE)
+    colnames(WeekData) <- c("Week", "2013",'2014','2015')
+    
+    ggplot(data=WeekData,aes(x=Week,y=Kills,color=.))+
+        geom_line(aes(x=Week,y = WeekData$'2013', col = "2013"),size=1)+
+        geom_line(aes(x=Week,y = WeekData$'2014', col = "2014"),size=1)+
+        geom_line(aes(x=Week,y = WeekData$'2015', col = "2015"),size=1)
+}
