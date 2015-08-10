@@ -23,10 +23,22 @@ Application
 ========================================================
 type: sub-section
 
-THe applciation  allows the user to:
+The applciation  allows the user to:
 
 - Select inputs such as year,race or sex to visualize 
 in the MAP of US the people killed by the police in every state
 - Interesting tables for the data
 - Check interesting plots of the data.
 - About page explaining the application.
+
+
+Data
+========================================================
+type: sub-section
+
+The data extracted by the site www.killedbypolice.net was modified and cleaned to get the following format:
+
+```{r,echo=FALSE}
+Data <- read.csv('Data.csv')
+head(Data)
+```
