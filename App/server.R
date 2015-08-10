@@ -6,7 +6,7 @@ library(reshape2)
 source('PlotsPoliceProj.R')
 all_states <- map_data('state')
 all_states <- all_states[all_states$region!="district of columbia",]
-Data <- read.csv('data.csv')
+Data <- read.csv('Data.csv')
 Data$Date <- as.Date(Data$Date)
 Populations <- read.csv('USpopulations.csv')
 
